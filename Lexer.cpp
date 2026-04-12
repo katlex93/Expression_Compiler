@@ -77,3 +77,9 @@ void Lexer::printVector(){
     }
 
 }
+
+//improve :
+//number checking 
+//identifier checking
+//whitespace handling
+//invalid-token handling
