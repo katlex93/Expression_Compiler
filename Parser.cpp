@@ -1,7 +1,7 @@
 /**
  * E → T { (+|-) T }
 T → F { (*|/) F }
-F → number | identifier
+F → number | identifier | -F |(E)
  */
 #include "Parser.h"
 #include <iostream>
@@ -79,6 +79,26 @@ Node* Parser::parseF(){
         scanToken();
         return node;
     }
+    else if(nextToken.key == Lexer::tokenType::LPARENTHESIS){
+        scanToken();
+        Node* a = parseE(); //check
+        if(a == nullptr) return nullptr;
+
+        if(nextToken.key == Lexer::tokenType::RPARENTHESIS){
+            scanToken();
+            return a;
+        }
+        std::cerr << "Error: ')' expected \n";
+        return nullptr;
+    
+    }
+    //check this 
+    else if(nextToken.key == Lexer::tokenType::MINUS){
+        scanToken();
+        Node* a = parseF();
+        if( a == nullptr) return nullptr;
+        return new Node("-", nullptr, a);
+    }
     return nullptr;
     
 }
@@ -86,6 +106,8 @@ Node* Parser::parseF(){
 /**
  * 
 unary minus
+handle assignment 
+handle ;
 parentheses precedence
 syntax errors
 AST evaluation
