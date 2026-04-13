@@ -11,13 +11,15 @@ class Lexer{
     //enum types of tokens
     enum class tokenType {
         ID,
-        TYPE, //not used yet
         NUM,
         PLUS,
         MINUS,
         MULTIPLY,
         DIVIDE,
         ASSIGN,
+        LPARENTHESIS,
+        RPARENTHESIS,
+        PRINT,
         ENDL
     };
     //strutc of token
@@ -37,5 +39,7 @@ class Lexer{
     std::string input;
     //helper functions
     void pushBackCurrent(std::string& current);
+    bool isNum(const std::string& string);
+    bool isId(const std::string& string);
     
 };

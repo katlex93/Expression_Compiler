@@ -83,4 +83,12 @@ Node* Parser::parseF(){
     
 }
 
+/**
+ * 
+unary minus
+parentheses precedence
+syntax errors
+AST evaluation
+print statement handling
+ */
    
