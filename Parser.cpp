@@ -1,4 +1,16 @@
 /**
+ * //adding statments  S - statement SL Statment list
+ * programm → SL
+ * SL → S {; S}
+ * S → ID = E | PRINT E
+ * E → T { (+|-) T }
+T → F { (*|/) F }
+F → number | identifier | -F |(E)
+
+FIXED 
+ * programm → SL
+ * SL → {S}
+ * S → ID = E; | PRINT E;
  * E → T { (+|-) T }
 T → F { (*|/) F }
 F → number | identifier | -F |(E)
@@ -24,16 +36,91 @@ void Parser::printTree(Node* node, int depth){
 
     printTree(node->left, depth + 1);
     printTree(node->right, depth + 1);
+
+    printTree(node-> next, depth);
+}
+//New version of AST
+Node* Parser::buildAST2(){
+    return parseSL();
+}
+/**
+
+ */
+Node* Parser::parseSL(){
+ Node* root = nullptr;
+ Node* current = nullptr;
+
+ while(position < tokens.size()){
+    Node* statement = parseS();
+
+    if(root == nullptr){
+        root= statement;
+        current = statement; 
+    }else {
+        current -> next = statement;
+        current = statement;
+    }
+    
+ }
+ return root;
 }
 
+Node* Parser::parseS(){
+    if(nextToken.key == Lexer::tokenType::ID){
+        Node* a = parseID();
+        if(nextToken.key != Lexer::tokenType::ASSIGN){
+            std::cerr << "Error, = expected\n";
+            return nullptr;
+        }
+        scanToken();
+        Node* b = parseE();
+        if(nextToken.key != Lexer::tokenType::ENDL){
+            std::cerr << "Error, ; expected\n";
+            return nullptr;
+        }
+        scanToken();
+        a = new Node("=", a , b);
+        return a;
+        
+    }
+    else if(nextToken.key == Lexer::tokenType::PRINT){
+        scanToken();
+        Node* b = parseE();
+        if (nextToken.key != Lexer::tokenType::ENDL){
+            std::cerr << "Error, ; expected\n";
+            return nullptr;
+        }
+        scanToken();
+
+        return new Node("print", nullptr, b);
+        
+
+    }
+
+    return nullptr;
+
+
+};
+
+
+Node* Parser::parseID(){
+    Node* node = new Node(nextToken.value, nullptr, nullptr);
+    scanToken();
+    return node;
+};
+
+
+//Old version of AST
 Node* Parser::buildAST(){
     return parseE();   
 }
 void Parser::scanToken(){
      position++;
-    if(position < tokens.size()){
+    if(position <= tokens.size()){
         nextToken = tokens[position];
     }
+
+
 }
 Node* Parser::parseE(){
     Node* a = parseT();

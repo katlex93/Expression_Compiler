@@ -3,14 +3,15 @@
 #include "Parser.h"
 #include "Node.h"
 
-int main(){
-    std::string input = "6* 2 - 4 * 2";
+int main(){ 
+    std::string input = "y = 7; x = 4 + y ; print y;  x = y; ";
     Lexer lexer(input);
     lexer.runLexer();
     // lexer.printVector();
 
     Parser parser(lexer.tokens);
-    Node* tree = parser.buildAST();
+    // Node* tree = parser.buildAST();
+    Node* tree = parser.buildAST2();
     parser.printTree(tree);
 
     return 0;

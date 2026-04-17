@@ -10,6 +10,10 @@ class Parser{
     Node* buildAST();
     void printTree(Node* node, int depth = 0);
 
+    //New version
+    Node* buildAST2();
+
+
     private:
     std::vector<Lexer::tokensStructure> tokens;
     int position;
@@ -18,6 +22,12 @@ class Parser{
     Node* parseE();
     Node* parseT();
     Node* parseF();
+
+    //New addons
+    Node* parseSL();
+    Node* parseS();
+    Node* parseID();
+    Node* parsePrint();
 
     
 };
