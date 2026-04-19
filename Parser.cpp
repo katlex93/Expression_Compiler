@@ -17,6 +17,7 @@ F → number | identifier | -F |(E)
  */
 #include "Parser.h"
 #include <iostream>
+#include "Lexer.h"
 
 Parser::Parser(const std::vector<Lexer::tokensStructure>& _tokens)
     :tokens(_tokens),
@@ -52,6 +53,10 @@ Node* Parser::parseSL(){
 
  while(position < tokens.size()){
     Node* statement = parseS();
+    if(statement == nullptr){
+        std::cerr << "Syntax error\n";
+        return nullptr;
+    }
 
     if(root == nullptr){
         root= statement;
@@ -79,7 +84,7 @@ Node* Parser::parseS(){
             return nullptr;
         }
         scanToken();
-        a = new Node("=", a , b);
+        a = new Node(Lexer::tokenType::ASSIGN, "=", a , b);
         return a;
         
     }
@@ -92,7 +97,7 @@ Node* Parser::parseS(){
         }
         scanToken();
 
-        return new Node("print", nullptr, b);
+        return new Node(Lexer::tokenType::PRINT,"print", nullptr, b);
         
 
     }
@@ -104,7 +109,7 @@ Node* Parser::parseS(){
 
 
 Node* Parser::parseID(){
-    Node* node = new Node(nextToken.value, nullptr, nullptr);
+    Node* node = new Node(nextToken.key, nextToken.value, nullptr, nullptr);
     scanToken();
     return node;
 };
@@ -116,7 +121,7 @@ Node* Parser::buildAST(){
 }
 void Parser::scanToken(){
      position++;
-    if(position <= tokens.size()){
+    if(position < tokens.size()){
         nextToken = tokens[position];
     }
 
@@ -129,12 +134,12 @@ Node* Parser::parseE(){
         if(nextToken.key == Lexer::tokenType::PLUS){
         scanToken();
         Node* b = parseT();
-        a = new Node("+", a, b);
+        a = new Node(Lexer::tokenType::PLUS , "+", a, b);
     }
     else if(nextToken.key == Lexer::tokenType::MINUS){
         scanToken();
         Node* b = parseT();
-        a = new Node("-", a, b);
+        a = new Node(Lexer::tokenType::MINUS ,"-", a, b);
     }
     else{
         return a;
@@ -148,12 +153,12 @@ Node* Parser::parseT(){
         if(nextToken.key == Lexer::tokenType::MULTIPLY){
         scanToken();
         Node* b = parseF();
-        a = new Node("*", a, b);
+        a = new Node(Lexer::tokenType::MULTIPLY ,"*", a, b);
     }
     else if(nextToken.key == Lexer::tokenType::DIVIDE){
         scanToken();
         Node* b = parseF();
-        a = new Node("/", a, b);
+        a = new Node(Lexer::tokenType::DIVIDE, "/", a, b);
     }else {
         return a;
     }}
@@ -162,7 +167,7 @@ Node* Parser::parseF(){
     if(nextToken.key == Lexer::tokenType::ID || 
         nextToken.key == Lexer::tokenType::NUM)
     {
-        Node* node = new Node(nextToken.value, nullptr, nullptr);
+        Node* node = new Node(nextToken.key, nextToken.value, nullptr, nullptr);
         scanToken();
         return node;
     }
@@ -184,7 +189,7 @@ Node* Parser::parseF(){
         scanToken();
         Node* a = parseF();
         if( a == nullptr) return nullptr;
-        return new Node("-", nullptr, a);
+        return new Node(Lexer::tokenType::MINUS, "-", nullptr, a);
     }
     return nullptr;
     

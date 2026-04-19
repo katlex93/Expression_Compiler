@@ -8,3 +8,6 @@ or print y+x;
 //ENDL
 Each statement must end with ';'.
 
+
+//TO DO
+HAndle int float etc

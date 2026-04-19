@@ -2,6 +2,7 @@
 #include "Lexer.h"
 #include "Parser.h"
 #include "Node.h"
+#include "CodeGen.h"
 
 int main(){ 
     std::string input = "y = 7; x = 4 + y ; print y;  x = y; ";
@@ -12,7 +13,10 @@ int main(){
     Parser parser(lexer.tokens);
     // Node* tree = parser.buildAST();
     Node* tree = parser.buildAST2();
-    parser.printTree(tree);
+    // parser.printTree(tree);
+
+    CodeGen codeGenerate(tree);
+    codeGenerate.genProgramm();
 
     return 0;
 }
